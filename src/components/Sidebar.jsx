@@ -1,9 +1,19 @@
+// src/components/Sidebar.jsx
 import React from 'react';
 
-export default function Sidebar({ isOpen, onClose }) {
+export default function Sidebar({ 
+  isOpen, 
+  onClose, 
+  selectedCategories = [],
+  onCategoryChange, 
+  sortOrder, 
+  onSortChange 
+}) {
+  
+  const categoriesList = ["men's clothing","women's clothing", 'jewelery', "electronics"];
   return (
     <>
-      {/* Mobile Backdrop overlay (Conditional Rendering based on state toggle) */}
+      {/* Mobile Backdrop */}
       <div 
         className={`fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-sm transition-opacity lg:hidden 
           ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
@@ -18,20 +28,25 @@ export default function Sidebar({ isOpen, onClose }) {
         {/* Mobile Header */}
         <div className="flex items-center justify-between lg:hidden mb-6">
           <h2 className="text-lg font-bold text-slate-800">Filters</h2>
-          <button onClick={onClose} className="rounded-md p-1.5 hover:bg-slate-100 text-slate-500">
-            ✕
-          </button>
+          <button onClick={onClose} className="rounded-md p-1.5 hover:bg-slate-100 text-slate-500">✕</button>
         </div>
 
         <h2 className="hidden lg:block text-xs font-bold uppercase tracking-wider text-slate-400 mb-6">Filters</h2>
 
-        {/* Categories Section */}
+        {/* Categories Filter Section */}
         <div className="mb-6">
           <h3 className="text-sm font-semibold text-slate-700 mb-3">Categories</h3>
           <div className="space-y-2">
-            {['Electronics', 'Jewelry', "Men's Clothing", "Women's Clothing"].map((category) => (
-              <label key={category} className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer hover:text-slate-900">
-                <input type="checkbox" className="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-slate-300" />
+            {categoriesList.map((category) => (
+              <label key={category} className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer hover:text-slate-900 capitalize">
+                <input 
+                  type="checkbox" 
+                  checked={selectedCategories.includes(category)}
+                  onChange={() => {
+                    onCategoryChange(category);
+                  }}
+                  className="rounded text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-slate-300" 
+                />
                 {category}
               </label>
             ))}
@@ -43,11 +58,23 @@ export default function Sidebar({ isOpen, onClose }) {
           <h3 className="text-sm font-semibold text-slate-700 mb-3">Sort By</h3>
           <div className="space-y-2">
             <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" name="sort" className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-slate-300" />
+              <input 
+                type="radio" 
+                name="sortOrderGroup"
+                checked={sortOrder === 'lowToHigh'}
+                onChange={() => onSortChange('lowToHigh')}
+                className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-slate-300" 
+              />
               Price: Low to High
             </label>
             <label className="flex items-center gap-3 text-sm text-slate-600 cursor-pointer">
-              <input type="radio" name="sort" className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-slate-300" />
+              <input 
+                type="radio" 
+                name="sortOrderGroup"
+                checked={sortOrder === 'highToLow'}
+                onChange={() => onSortChange('highToLow')}
+                className="text-indigo-600 focus:ring-indigo-500 h-4 w-4 border-slate-300" 
+              />
               Price: High to Low
             </label>
           </div>
