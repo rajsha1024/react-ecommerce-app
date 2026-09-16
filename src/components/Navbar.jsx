@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { decrementQuantity, incrementQuantity } from '../store/testSlice';
 
 
-export default function Navbar({ onToggleSidebar }) {
+export default function Navbar({ onToggleSidebar, searchValue, onSearchChange }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
 
@@ -30,7 +30,13 @@ export default function Navbar({ onToggleSidebar }) {
 
           {/* Search Bar */}
           <div className="hidden max-w-md flex-1 sm:block">
-            <input type="text" placeholder="Search products..." className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-1.5 text-sm outline-none transition-all focus:border-indigo-500 focus:bg-white" />
+            <input 
+              type="text" 
+              placeholder="Search products..." 
+              className="w-full rounded-full border border-slate-300 bg-slate-50 px-4 py-1.5 text-sm outline-none transition-all focus:border-indigo-500 focus:bg-white"
+              value={searchValue}
+              onChange={onSearchChange}
+              />
           </div>
 
           {/* Cart Icon Area with Dropdown Container */}

@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Sidebar, ProductCard, SkeletonCard } from '../components';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../store/testSlice'; 
+import useDebounce from '../hooks/useDebounce';
 
-export default function HomePage({ isSidebarOpen, setIsSidebarOpen }) {
+export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery }) {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -14,6 +15,8 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen }) {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [sortOrder, setSortOrder] = useState(''); 
     const [visibleItemsCount, setVisibleItemsCount] = useState(9);
+
+    const debouncedSearchQuery = useDebounce(searchQuery, 400);
 
     // 1. Data Fetching API Request Effect Block
     useEffect(() => {
@@ -87,6 +90,13 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen }) {
     const filteredAndSortedProducts = useMemo(() => {
     let result = [...products];
 
+    // 🔍 A. Apply filtering from our debounced search string hook
+    if (debouncedSearchQuery.trim() !== '') {
+        result = result.filter(product => 
+          product.title.toLowerCase().includes(debouncedSearchQuery.toLowerCase().trim())
+        );
+      }
+
     if (selectedCategories.length > 0) {
         result = result.filter(product => {
         return selectedCategories.includes(product.category.toLowerCase().trim());
@@ -100,7 +110,7 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen }) {
     }
 
     return result;
-    }, [products, selectedCategories, sortOrder]);
+    }, [products, debouncedSearchQuery, selectedCategories, sortOrder]);
 
     // Slicing data mapping array segments for active infinite lazy-loading count bounds
     const visibleProducts = filteredAndSortedProducts.slice(0, visibleItemsCount);
@@ -129,7 +139,7 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen }) {
             </div>
 
             {/* Error Message Layout Frame */}
-            {error && (
+            {!isLoading && !error && visibleProducts.length === 0 && (
             <div className="rounded-xl border border-rose-200 bg-rose-50 p-6 text-center text-rose-700">
                 <p className="font-semibold">{error}</p>
                 <p className="text-sm mt-1">Please Check Internet issue</p>
