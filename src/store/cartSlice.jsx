@@ -17,6 +17,7 @@ const cartSlice = createSlice({
       decrementQuantity: (state, action) => {
         const item = state.cartItems.find(item => item.id === action.payload);
         if (item) {
+            //  If quantity is only 1 and user clicks minus, REMOVE the product from the cart
           if (item.quantity === 1) {
             state.cartItems = state.cartItems.filter(i => i.id !== action.payload);
           } else {
