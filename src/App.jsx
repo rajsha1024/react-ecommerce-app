@@ -3,6 +3,7 @@ import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Navbar } from './components';
 import HomePage from './pages/homePage';
 import ProductDetailPage from './pages/ProductDetailPage';
+import CheckoutPage from './pages/checkoutPage';
 
 
 export default function App() {
@@ -37,6 +38,9 @@ export default function App() {
             onBack={() => navigate(-1)}
           />} 
       />
+
+      <Route path="/checkout" element={<CheckoutPage />} />
+
     </Routes>
 
      

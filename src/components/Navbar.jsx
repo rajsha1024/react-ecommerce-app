@@ -2,10 +2,12 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {incrementQuantity, decrementQuantity} from '../store/cartSlice';
+import { useNavigate } from 'react-router-dom';
 
 export default function Navbar({ onToggleSidebar, searchValue, onSearchChange }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   //Get cart data from Redux
   const cartItems = useSelector((state) => state.cart.cartItems);
@@ -96,7 +98,11 @@ export default function Navbar({ onToggleSidebar, searchValue, onSearchChange })
                         <span>Subtotal:</span>
                         <span>${subtotal.toFixed(2)}</span>
                       </div>
-                      <button className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg text-xs transition-colors shadow-sm">
+                      <button onClick={() => {
+                          setIsCartOpen(false);
+                          navigate('/checkout');
+                        }} 
+                        className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 rounded-lg text-xs transition-colors shadow-sm">
                         Checkout Now
                       </button>
                     </div>
