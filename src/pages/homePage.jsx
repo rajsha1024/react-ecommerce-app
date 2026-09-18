@@ -1,10 +1,11 @@
 import React, { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Sidebar, ProductCard, SkeletonCard } from '../components';
 import { useDispatch } from 'react-redux';
-import { addToCart } from '../store/testSlice'; 
+import { addToCart } from '../store/cartSlice'; 
 import useDebounce from '../hooks/useDebounce';
 
-export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery }) {
+export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery, onProductSelect}) {
     const [products, setProducts] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -17,7 +18,8 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery 
     const [visibleItemsCount, setVisibleItemsCount] = useState(9);
 
     const debouncedSearchQuery = useDebounce(searchQuery, 400);
-
+    
+    const navigate = useNavigate();
     // 1. Data Fetching API Request Effect Block
     useEffect(() => {
     // const fetchProducts = async () =>{
@@ -132,7 +134,7 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery 
         {/* Content Layout Display Pipeline */}
         <main className="flex-1 py-8">
             <div className="mb-6 flex items-center justify-between">
-            <h1 className="text-xl font-bold tracking-tight text-slate-900">Trending Products</h1>
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">Products</h1>
             <p className="text-sm text-slate-500">
                 {isLoading ? 'Loading...' : `Showing ${visibleProducts.length} of ${filteredAndSortedProducts.length} results`}
             </p>
@@ -168,6 +170,7 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery 
                 {visibleProducts.map((product) => (
                 <ProductCard
                     key={product.id}
+                    id={product.id}
                     title={product.title}
                     price={product.price}
                     image={product.image}
@@ -175,6 +178,9 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery 
                     rating={product.rating?.rate || 0}
                     inStock={product.inStock}
                     onAddToCart={() => dispatch(addToCart(product))}
+                    onViewDetails={() => navigate(`/product/${product.id}`)}
+
+                    
                 />
                 ))}
             </div>

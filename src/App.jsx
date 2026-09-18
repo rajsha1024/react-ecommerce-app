@@ -1,9 +1,16 @@
 import React, {useState } from 'react';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 import { Navbar } from './components';
 import HomePage from './pages/homePage';
+import ProductDetailPage from './pages/ProductDetailPage';
+
+
 export default function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedProductId, setSelectedProductId] = useState(null);
+
+  const navigate = useNavigate();
   return (
   <div className="min-h-screen bg-slate-50 font-sans antialiased text-slate-900">
     <Navbar
@@ -11,11 +18,28 @@ export default function App() {
       onToggleSidebar={() => setIsSidebarOpen(true)}
       onSearchChange={(e) => setSearchQuery(e.target.value)}
     />
-    <HomePage 
-        isSidebarOpen={isSidebarOpen}
-        setIsSidebarOpen={setIsSidebarOpen}
-        searchQuery={searchQuery}
+
+    <Routes>
+      <Route
+        path="/"
+        element={
+          <HomePage
+            isSidebarOpen={isSidebarOpen}
+            setIsSidebarOpen={setIsSidebarOpen}
+            searchQuery={searchQuery}
+          />
+        }
       />
+      
+      <Route 
+        path="/product/:id" 
+        element={<ProductDetailPage
+            onBack={() => navigate(-1)}
+          />} 
+      />
+    </Routes>
+
+     
   </div>
   );
 }

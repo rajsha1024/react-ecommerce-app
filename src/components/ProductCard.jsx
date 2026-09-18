@@ -1,7 +1,7 @@
 import React from 'react';
 
 // Receiving data via Props
-export default function ProductCard({ title, price, image, category, rating, inStock, onAddToCart }) {
+export default function ProductCard({ id, title, price, image, category, rating, inStock, onAddToCart, onViewDetails }) {
 
   return (
     <div className="relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition-all hover:shadow-md">
@@ -16,7 +16,9 @@ export default function ProductCard({ title, price, image, category, rating, inS
       )}
 
       {/* Product Image */}
-      <div className="group relative mb-4 aspect-square w-full overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center p-4">
+      <div
+        onClick={() => onViewDetails(id)}
+        className="group cursor-pointer relative mb-4 aspect-square w-full overflow-hidden rounded-lg bg-slate-100 flex items-center justify-center p-4">
         <img 
           src={image} 
           alt={title} 
@@ -29,7 +31,7 @@ export default function ProductCard({ title, price, image, category, rating, inS
 
       {/* Product Details */}
       <div className="flex flex-1 flex-col">
-        <h3 className="line-clamp-2 text-sm font-medium text-slate-700 min-h-[40px]">
+        <h3  onClick={onViewDetails}  className=" cursor-pointer line-clamp-2 text-sm font-medium text-slate-700 min-h-[40px]">
           {title}
         </h3>
         
@@ -45,7 +47,7 @@ export default function ProductCard({ title, price, image, category, rating, inS
           <button
             onClick={onAddToCart}
             disabled={!inStock}
-            className={`rounded-lg px-3.5 py-2 text-xs font-semibold tracking-wide shadow-sm transition-colors
+            className={`rounded-lg cursor-pointer px-3.5 py-2 text-xs font-semibold tracking-wide shadow-sm transition-colors
               ${inStock 
                 ? 'bg-indigo-600 text-white hover:bg-indigo-700 active:bg-indigo-800' 
                 : 'bg-slate-100 text-slate-400 cursor-not-allowed'

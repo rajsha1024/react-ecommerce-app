@@ -1,8 +1,7 @@
 // src/components/Navbar.jsx
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { decrementQuantity, incrementQuantity } from '../store/testSlice';
-
+import {incrementQuantity, decrementQuantity} from '../store/cartSlice';
 
 export default function Navbar({ onToggleSidebar, searchValue, onSearchChange }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
