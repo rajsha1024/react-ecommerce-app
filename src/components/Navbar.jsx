@@ -1,9 +1,8 @@
-// src/components/Navbar.jsx
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {incrementQuantity, decrementQuantity} from '../store/cartSlice';
-import { useNavigate } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { logout } from '../store/authSlice';
 export default function Navbar({ onToggleSidebar, searchValue, onSearchChange }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
@@ -13,6 +12,11 @@ export default function Navbar({ onToggleSidebar, searchValue, onSearchChange })
   const cartItems = useSelector((state) => state.cart.cartItems);
   const cartCount = cartItems.reduce((total, item) => total + item.quantity, 0);
   const subtotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+  const user = useSelector((state) => state.auth.user);
+
+  console.log('user', user)
+
 
   return (
     <nav className="sticky top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur-md">
@@ -26,7 +30,9 @@ export default function Navbar({ onToggleSidebar, searchValue, onSearchChange })
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
               </svg>
             </button>
-            <span className="text-xl font-black tracking-tight text-indigo-600 cursor-pointer">ShopX</span>
+            <Link to="/" className="text-xl font-black tracking-tight text-indigo-600">
+              ShopX
+            </Link>
           </div>
 
           {/* Search Bar */}
@@ -40,6 +46,28 @@ export default function Navbar({ onToggleSidebar, searchValue, onSearchChange })
               />
           </div>
 
+          <div>
+            {user ? (
+              <button
+                type="button"
+                onClick={() => {
+                  dispatch(logout());
+                  navigate('/');
+                }}
+                className="mr-2 text-xs cursor-pointer font-semibold text-slate-600 hover:text-indigo-600"
+              >
+                Logout <span> {user && user.username ? user.username : ""}</span>
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={() => navigate('/auth')}
+                className="mr-2 text-xs font-semibold text-indigo-600 hover:text-indigo-700"
+              >
+                Login
+              </button>
+            )}
+          </div>
           {/* Cart Icon Area with Dropdown Container */}
           <div className="relative">
             {/* Cart Trigger Button */}

@@ -4,6 +4,8 @@ import { Navbar } from './components';
 import HomePage from './pages/homePage';
 import ProductDetailPage from './pages/ProductDetailPage';
 import CheckoutPage from './pages/checkoutPage';
+import ProtectedRoute from './components/ProtectedRoute';
+import AuthPage from './pages/authPage';
 
 
 export default function App() {
@@ -39,7 +41,13 @@ export default function App() {
           />} 
       />
 
-      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/checkout" element={
+        <ProtectedRoute>
+            <CheckoutPage />
+        </ProtectedRoute>
+      } />
+
+      <Route path="/auth" element={<AuthPage />} />
 
     </Routes>
 
