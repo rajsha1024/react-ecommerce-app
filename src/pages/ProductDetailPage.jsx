@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
+import { addToWishlist, removeFromWishlist } from '../store/wishlistSlice';
+
 
 export default function ProductDetailPage({ onBack }) {
   const [product, setProduct] = useState(null);
@@ -11,6 +13,11 @@ export default function ProductDetailPage({ onBack }) {
   
   const dispatch = useDispatch();
   const { id: productId } = useParams();
+
+  const wishlistItems = useSelector((state) => state.wishlist.wishlistItems);
+  const isWishlisted = product ? wishlistItems.some((item) => item.id === product.id) : false;
+
+
 
   // 1. Single Product Data Fetching API Request
 
@@ -43,6 +50,16 @@ export default function ProductDetailPage({ onBack }) {
   const handleAddToCart = () => {
     if (product) {
       dispatch(addToCart(product));
+    }
+  };
+
+  const handleToggleWishlist = () => {
+    if (!product) return;
+
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(product.id));
+    } else {
+      dispatch(addToWishlist(product));
     }
   };
 
@@ -162,6 +179,16 @@ export default function ProductDetailPage({ onBack }) {
                   }`}
               >
                 {product.inStock ? 'Add to Shopping Cart' : 'Out of Stock'}
+              </button>
+              <button
+                onClick={handleToggleWishlist}
+                className={`w-full rounded-xl border px-4 py-2.5 text-sm font-semibold transition-colors ${
+                  isWishlisted
+                    ? 'border-red-200 bg-red-50 text-red-600 hover:bg-red-100'
+                    : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                }`}
+              >
+                {isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}
               </button>
             </div>
 

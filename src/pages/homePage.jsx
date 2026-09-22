@@ -1,7 +1,8 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar, ProductCard, SkeletonCard } from '../components';
-import { useDispatch } from 'react-redux';
+import { useDispatch,useSelector } from 'react-redux';
+import { addToWishlist, removeFromWishlist } from '../store/wishlistSlice';
 import { addToCart } from '../store/cartSlice'; 
 import useDebounce from '../hooks/useDebounce';
 
@@ -20,6 +21,9 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery,
     const debouncedSearchQuery = useDebounce(searchQuery, 400);
     
     const navigate = useNavigate();
+
+    const wishlistItems = useSelector((state) => state.wishlist.wishlistItems);
+
     // 1. Data Fetching API Request Effect Block
     useEffect(() => {
     // const fetchProducts = async () =>{
@@ -167,8 +171,11 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery,
             {/* Success Active Elements Generation Render Mapping Area */}
             {!isLoading && !error && (
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
-                {visibleProducts.map((product) => (
-                <ProductCard
+              {visibleProducts.map((product) => {
+                const isWishlisted = wishlistItems.some((item) => item.id === product.id);
+
+                return (
+                  <ProductCard
                     key={product.id}
                     id={product.id}
                     title={product.title}
@@ -177,14 +184,23 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery,
                     category={product.category}
                     rating={product.rating?.rate || 0}
                     inStock={product.inStock}
+                    isWishlisted={isWishlisted}
                     onAddToCart={() => dispatch(addToCart(product))}
-                    onViewDetails={() => navigate(`/product/${product.id}`)}
+                    onToggleWishlist={(productId) => {
+                        const alreadySaved = wishlistItems.some((item) => item.id === productId);
 
-                    
-                />
-                ))}
+                        if (alreadySaved) {
+                        dispatch(removeFromWishlist(productId));
+                        } else {
+                        dispatch(addToWishlist(product));
+                        }
+                    }}
+                    onViewDetails={(productId) => navigate(`/product/${productId}`)}
+                  />
+                );
+              })}
             </div>
-            )}
+          )}
             
         </main>
         </div>
