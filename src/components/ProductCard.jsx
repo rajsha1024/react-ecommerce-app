@@ -69,7 +69,7 @@ export default function ProductCard({ id, title, price, image, category, rating,
           <svg 
                 xmlns="http://www.w3.org/2000/svg" 
                 viewBox="0 0 24 24" 
-                fill={isWishlisted > 0 ? 'currentColor' : 'none'} 
+                fill={isWishlisted  ? 'currentColor' : 'none'} 
                 stroke="currentColor" 
                 strokeWidth="1.8" 
                 className={`h-4 w-4 ${isWishlisted ? 'text-red-500' : 'text-slate-600'}`}

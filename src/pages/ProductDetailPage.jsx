@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { addToCart } from '../store/cartSlice';
-import { addToWishlist, removeFromWishlist } from '../store/wishlistSlice';
+import { addToWishlistDB, removeFromWishlistDB } from '../store/wishlistSlice';
 
 
 export default function ProductDetailPage({ onBack }) {
@@ -55,11 +55,12 @@ export default function ProductDetailPage({ onBack }) {
 
   const handleToggleWishlist = () => {
     if (!product) return;
+    const currentUserId = user?.id || 1;
 
     if (isWishlisted) {
-      dispatch(removeFromWishlist(product.id));
+      dispatch(removeFromWishlistDB(product.id));
     } else {
-      dispatch(addToWishlist(product));
+      dispatch(addToWishlistDB({ userId: currentUserId, product }));
     }
   };
 

@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {incrementQuantity, decrementQuantity} from '../store/cartSlice';
 import { Link, useNavigate } from 'react-router-dom';
 import { logout } from '../store/authSlice';
-import { removeFromWishlist } from '../store/wishlistSlice';
+import { removeFromWishlistDB } from '../store/wishlistSlice';
 
 export default function Navbar({ onToggleSidebar, searchValue, onSearchChange }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
@@ -124,11 +124,11 @@ export default function Navbar({ onToggleSidebar, searchValue, onSearchChange })
                         />
                         <div className="flex-1 min-w-0">
                           <h4 className="text-xs font-medium text-slate-700 truncate">{item.title}</h4>
-                          <p className="mt-0.5 text-xs font-bold text-slate-900">${item.price.toFixed(2)}</p>
+                          <p className="mt-0.5 text-xs font-bold text-slate-900">${item.price?.toFixed(2) || 0.00}</p>
                         </div>
                         <button
                           type="button"
-                          onClick={() => dispatch(removeFromWishlist(item.id))}
+                          onClick={() => dispatch(removeFromWishlistDB(item.id))}
                           className="rounded-full p-1 text-slate-400 hover:bg-red-50 hover:text-red-500"
                           aria-label={`Remove ${item.title} from wishlist`}
                         >

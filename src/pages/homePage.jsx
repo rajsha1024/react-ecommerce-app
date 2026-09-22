@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Sidebar, ProductCard, SkeletonCard } from '../components';
 import { useDispatch,useSelector } from 'react-redux';
-import { addToWishlist, removeFromWishlist } from '../store/wishlistSlice';
+import { addToWishlistDB, removeFromWishlistDB } from '../store/wishlistSlice';
 import { addToCart } from '../store/cartSlice'; 
 import useDebounce from '../hooks/useDebounce';
 
@@ -23,7 +23,7 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery,
     const navigate = useNavigate();
 
     const wishlistItems = useSelector((state) => state.wishlist.wishlistItems);
-
+    const user = useSelector((state) => state.auth?.user || state.auth?.user?.user); 
     // 1. Data Fetching API Request Effect Block
     useEffect(() => {
     // const fetchProducts = async () =>{
@@ -187,12 +187,11 @@ export default function HomePage({ isSidebarOpen, setIsSidebarOpen, searchQuery,
                     isWishlisted={isWishlisted}
                     onAddToCart={() => dispatch(addToCart(product))}
                     onToggleWishlist={(productId) => {
-                        const alreadySaved = wishlistItems.some((item) => item.id === productId);
-
-                        if (alreadySaved) {
-                        dispatch(removeFromWishlist(productId));
+                        const currentUserId = user?.id || 1; // यदि यूजर लॉगिन नहीं है तो मॉक आईडी 1
+                        if (isWishlisted) {
+                            dispatch(removeFromWishlistDB(productId));
                         } else {
-                        dispatch(addToWishlist(product));
+                            dispatch(addToWishlistDB({ userId: currentUserId, product }));
                         }
                     }}
                     onViewDetails={(productId) => navigate(`/product/${productId}`)}
